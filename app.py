@@ -35,8 +35,6 @@ bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 socketio = SocketIO(app, cors_allowed_origins="*")
-with app.app_context():
-    db.create_all()
 # ─────────────────────────────────────────────
 # DATABASE MODELS (Tables in the database)
 # ─────────────────────────────────────────────
