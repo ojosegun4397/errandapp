@@ -34,17 +34,16 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
-socketio = SocketIO(app, cors_allowed_origins="*")`r`n`r`nwith app.app_context():`r`n    db.create_all()
-
+socketio = SocketIO(app, cors_allowed_origins="*")
+with app.app_context():
+    db.create_all()
 # ─────────────────────────────────────────────
 # DATABASE MODELS (Tables in the database)
 # ─────────────────────────────────────────────
 
 # USER TABLE — stores everyone who signs up
 class User(UserMixin, db.Model):
-    tablename = 'users'
-    tablename = 'users'
-    tablename = 'users'
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False)
@@ -360,3 +359,4 @@ if __name__ == '__main__':
 
 with app.app_context():
     db.create_all()
+
