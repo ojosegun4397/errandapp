@@ -1,4 +1,7 @@
 import os
+import os
+import eventlet
+eventlet.monkey_patch()
 import requests
 from flask import Flask, render_template, redirect, url_for, request, flash, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
