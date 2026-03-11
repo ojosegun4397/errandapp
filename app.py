@@ -343,4 +343,3 @@ if __name__ == '__main__':
         db.create_all()  # Create all database tables
         print("✅ Database tables created!")
     socketio.run(app, debug=True)
-
