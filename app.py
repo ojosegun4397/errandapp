@@ -40,7 +40,8 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 # ─────────────────────────────────────────────
 
 # USER TABLE — stores everyone who signs up
-class User(db.Model, UserMixin):
+class User(UserMixin, db.Model):
+    tablename = 'users'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False)
@@ -55,6 +56,7 @@ class User(db.Model, UserMixin):
 
 # ERRAND TABLE — stores all errands posted
 class Errand(db.Model):
+    tablename = 'errands'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
@@ -70,6 +72,7 @@ class Errand(db.Model):
 
 # MESSAGE TABLE — stores all chat messages
 class Message(db.Model):
+    tablename = 'messages'
     id = db.Column(db.Integer, primary_key=True)
     sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -81,6 +84,7 @@ class Message(db.Model):
 
 # PAYMENT TABLE — stores all payments
 class Payment(db.Model):
+    tablename = 'payments'
     id = db.Column(db.Integer, primary_key=True)
     errand_id = db.Column(db.Integer, db.ForeignKey('errand.id'), nullable=False)
     payer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
