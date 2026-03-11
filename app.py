@@ -42,6 +42,8 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 # USER TABLE — stores everyone who signs up
 class User(UserMixin, db.Model):
     tablename = 'users'
+    tablename = 'users'
+    tablename = 'users'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False)
@@ -350,3 +352,4 @@ if __name__ == '__main__':
         print("✅ Database tables created!")
     port = int(os.environ.get('PORT', 5000))
     socketio.run(app, host='0.0.0.0', port=port, debug=False)
+
