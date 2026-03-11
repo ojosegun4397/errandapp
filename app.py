@@ -30,6 +30,9 @@ PAYSTACK_PUBLIC_KEY = os.getenv('PAYSTACK_PUBLIC_KEY', '')
 # SET UP TOOLS
 # ─────────────────────────────────────────────
 db = SQLAlchemy(app)
+
+with app.app_context():
+    db.create_all()
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -352,4 +355,5 @@ if __name__ == '__main__':
         print("✅ Database tables created!")
     port = int(os.environ.get('PORT', 5000))
     socketio.run(app, host='0.0.0.0', port=port, debug=False)
+
 
