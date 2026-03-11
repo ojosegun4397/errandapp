@@ -1,0 +1,6 @@
+venv/
+__pycache__/
+*.pyc
+errandapp.db
+.env
+instance/

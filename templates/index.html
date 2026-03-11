@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- HERO -->
+<div class="hero-section fade-in">
+    <div class="row align-items-center">
+        <div class="col-lg-7">
+            <h1>Run Errands,<br><span class="highlight">Earn Money 💰</span></h1>
+            <p class="mt-3 mb-4">Post an errand and get it done fast by trusted runners near you. Or become a runner and start earning today!</p>
+            <div class="d-flex gap-3 flex-wrap">
+                <a href="{{ url_for('register') }}" class="btn-hero-primary">Get Started Free 🚀</a>
+                <a href="{{ url_for('runners') }}" class="btn-hero-secondary">Find a Runner →</a>
+            </div>
+        </div>
+        <div class="col-lg-5 text-center d-none d-lg-block">
+            <div style="font-size: 8rem; opacity: 0.15; line-height:1;">🛵</div>
+        </div>
+    </div>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar fade-in-1">
+    <div class="stat-item">
+        <div class="stat-number">500+</div>
+        <div class="stat-label">Errands Done</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+        <div class="stat-number">120+</div>
+        <div class="stat-label">Active Runners</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+        <div class="stat-number">4.9⭐</div>
+        <div class="stat-label">Avg Rating</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+        <div class="stat-number">30min</div>
+        <div class="stat-label">Avg Delivery</div>
+    </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="mb-5 fade-in-2">
+    <h2 class="section-title">How It Works</h2>
+    <p class="section-subtitle">Three simple steps to get your errands done</p>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="how-card">
+                <span class="step-number">01</span>
+                <div class="icon-wrap">📝</div>
+                <h5>Post Your Errand</h5>
+                <p>Tell us what you need done, where to pick up, where to deliver, and your budget.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="how-card">
+                <span class="step-number">02</span>
+                <div class="icon-wrap">🏃</div>
+                <h5>A Runner Accepts</h5>
+                <p>A nearby trusted runner sees your errand and accepts it right away. Chat with them directly!</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="how-card">
+                <span class="step-number">03</span>
+                <div class="icon-wrap">📦</div>
+                <h5>Get It Delivered</h5>
+                <p>Track via chat and pay securely with Paystack when your errand is complete.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AVAILABLE RUNNERS -->
+{% if runners %}
+<div class="mb-5 fade-in-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="section-title mb-0">Available Runners 🏃</h2>
+            <p class="section-subtitle mb-0">Ready to run your errands right now</p>
+        </div>
+        <a href="{{ url_for('runners') }}" class="btn-navy btn">See All →</a>
+    </div>
+    <div class="row g-4 mt-1">
+        {% for runner in runners %}
+        <div class="col-md-4">
+            <div class="runner-card">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="avatar-circle me-3">{{ runner.name[0].upper() }}</div>
+                    <div>
+                        <div class="runner-name">{{ runner.name }}</div>
+                        <div class="runner-location">📍 {{ runner.location or 'Lagos' }}</div>
+                    </div>
+                </div>
+                <p class="runner-bio">{{ runner.bio or 'Ready to run your errands fast and safely!' }}</p>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="rating-badge">⭐ {{ runner.rating }}/5</span>
+                    <span class="available-badge">✅ Available</span>
+                </div>
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('chat', other_user_id=runner.id) }}" class="btn btn-primary w-100">💬 Chat Now</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-primary w-100">🔐 Login to Chat</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- OPEN ERRANDS -->
+{% if errands %}
+<div class="mb-5">
+    <h2 class="section-title">Open Errands 📋</h2>
+    <p class="section-subtitle">Errands waiting for a runner to accept</p>
+    <div class="row g-4">
+        {% for errand in errands %}
+        <div class="col-md-6">
+            <div class="errand-card">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h6 class="errand-title">{{ errand.title }}</h6>
+                    <span class="status-open ms-2">Open</span>
+                </div>
+                <p class="errand-desc">{{ errand.description[:100] }}...</p>
+                <div class="errand-route">
+                    <div>📍 <strong>From:</strong> {{ errand.pickup_location }}</div>
+                    <div class="mt-1">📦 <strong>To:</strong> {{ errand.delivery_location }}</div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="errand-budget">₦{{ "{:,.0f}".format(errand.budget) }}</span>
+                    {% if current_user.is_authenticated and current_user.role == 'runner' %}
+                        <a href="{{ url_for('accept_errand', errand_id=errand.id) }}" class="btn btn-success btn-sm">Accept ✅</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

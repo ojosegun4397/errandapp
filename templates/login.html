@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5 col-lg-4">
+        <div class="form-card fade-in">
+            <div class="text-center mb-4">
+                <div style="font-size:3rem;">👋</div>
+                <h2 class="mt-2">Welcome Back!</h2>
+                <p class="subtitle">Login to your ErrandApp account</p>
+            </div>
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" name="email" class="form-control" placeholder="you@example.com" required>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" placeholder="Your password" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-3" style="font-size:1rem;">Login →</button>
+            </form>
+            <p class="text-center mt-4" style="color:var(--gray-400); font-size:0.9rem;">
+                Don't have an account? <a href="{{ url_for('register') }}" style="color:var(--primary); font-weight:600;">Sign up free</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

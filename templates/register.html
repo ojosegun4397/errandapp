@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- FILE: register.html -->
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="form-card fade-in">
+            <h2>Create Account 🎉</h2>
+            <p class="subtitle">Join thousands using ErrandApp today</p>
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" name="name" class="form-control" placeholder="e.g. Segun Ojo" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" name="email" class="form-control" placeholder="you@example.com" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" placeholder="Choose a strong password" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Phone Number</label>
+                    <input type="text" name="phone" class="form-control" placeholder="+234 800 000 0000">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Your Location</label>
+                    <input type="text" name="location" class="form-control" placeholder="e.g. Lagos, Ikeja">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">I want to be a...</label>
+                    <select name="role" class="form-select">
+                        <option value="customer">🛍️ Customer — I need errands done</option>
+                        <option value="runner">🏃 Runner — I'll run errands and earn</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Short Bio <span style="color:var(--gray-400)">(optional)</span></label>
+                    <textarea name="bio" class="form-control" rows="2" placeholder="Tell us a little about yourself..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-3" style="font-size:1rem;">Create My Account 🚀</button>
+            </form>
+            <p class="text-center mt-4" style="color:var(--gray-400); font-size:0.9rem;">
+                Already have an account? <a href="{{ url_for('login') }}" style="color:var(--primary); font-weight:600;">Login here</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

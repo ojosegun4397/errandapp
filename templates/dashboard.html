@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- DASHBOARD HEADER -->
+<div class="dashboard-header fade-in">
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <span class="role-pill mb-2 d-inline-block">{{ current_user.role.title() }}</span>
+            <h2>Hello, {{ current_user.name.split()[0] }}! 👋</h2>
+            <p>{{ "Here are your posted errands." if current_user.role == 'customer' else "Here are open errands you can accept." }}</p>
+        </div>
+    </div>
+</div>
+
+{% if current_user.role == 'customer' %}
+    <!-- CUSTOMER VIEW -->
+    <div class="d-flex justify-content-between align-items-center mb-4 fade-in-1">
+        <h3 class="section-title mb-0">Your Errands</h3>
+        <a href="{{ url_for('post_errand') }}" class="btn btn-primary">➕ Post New Errand</a>
+    </div>
+
+    {% if errands %}
+        <div class="row g-4 fade-in-2">
+        {% for errand in errands %}
+            <div class="col-md-6">
+                <div class="errand-card">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="errand-title">{{ errand.title }}</h6>
+                        {% if errand.status == 'completed' %}
+                            <span class="status-completed">Completed ✅</span>
+                        {% elif errand.status == 'assigned' %}
+                            <span class="status-assigned">In Progress 🏃</span>
+                        {% else %}
+                            <span class="status-open">Open 📋</span>
+                        {% endif %}
+                    </div>
+                    <p class="errand-desc">{{ errand.description }}</p>
+                    <div class="errand-route mb-3">
+                        <div>📍 <strong>Pickup:</strong> {{ errand.pickup_location }}</div>
+                        <div class="mt-1">📦 <strong>Deliver to:</strong> {{ errand.delivery_location }}</div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="errand-budget">₦{{ "{:,.0f}".format(errand.budget) }}</span>
+                        <div class="d-flex gap-2">
+                            {% if errand.runner and errand.status == 'assigned' %}
+                                <a href="{{ url_for('chat', other_user_id=errand.runner_id) }}" class="btn btn-outline-primary btn-sm">💬 Chat</a>
+                                <a href="{{ url_for('pay', errand_id=errand.id) }}" class="btn btn-success btn-sm">💳 Pay</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if errand.runner %}
+                    <div class="mt-3 pt-3" style="border-top: 1px solid var(--gray-200);">
+                        <small style="color:var(--gray-400);">🏃 Runner: <strong style="color:var(--navy);">{{ errand.runner.name }}</strong></small>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state fade-in-2">
+            <div class="empty-icon">📝</div>
+            <h4>No Errands Yet</h4>
+            <p>Post your first errand and get it done fast!</p>
+            <a href="{{ url_for('post_errand') }}" class="btn btn-primary px-5">Post Your First Errand 🚀</a>
+        </div>
+    {% endif %}
+
+{% else %}
+    <!-- RUNNER VIEW -->
+    <div class="d-flex justify-content-between align-items-center mb-4 fade-in-1">
+        <h3 class="section-title mb-0">Open Errands to Accept</h3>
+        <span style="color:var(--gray-400); font-size:0.9rem;">{{ errands|length }} available</span>
+    </div>
+
+    {% if errands %}
+        <div class="row g-4 fade-in-2">
+        {% for errand in errands %}
+            <div class="col-md-6">
+                <div class="errand-card">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="errand-title">{{ errand.title }}</h6>
+                        <span class="status-open">Open</span>
+                    </div>
+                    <p class="errand-desc">{{ errand.description }}</p>
+                    <div class="errand-route mb-3">
+                        <div>📍 <strong>Pickup:</strong> {{ errand.pickup_location }}</div>
+                        <div class="mt-1">📦 <strong>Deliver to:</strong> {{ errand.delivery_location }}</div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="errand-budget">₦{{ "{:,.0f}".format(errand.budget) }}</span>
+                        <a href="{{ url_for('accept_errand', errand_id=errand.id) }}" class="btn btn-primary btn-sm">Accept Errand ✅</a>
+                    </div>
+                    <div class="mt-3 pt-3" style="border-top: 1px solid var(--gray-200);">
+                        <small style="color:var(--gray-400);">👤 Posted by: <strong style="color:var(--navy);">{{ errand.customer.name }}</strong></small>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state fade-in-2">
+            <div class="empty-icon">🏃</div>
+            <h4>No Open Errands</h4>
+            <p>No errands available right now. Check back soon!</p>
+        </div>
+    {% endif %}
+{% endif %}
+
+{% endblock %}

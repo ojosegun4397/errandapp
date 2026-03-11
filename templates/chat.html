@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div id="chat-data"
+     data-my-id="{{ current_user.id }}"
+     data-other-id="{{ other_user.id }}"
+     data-my-name="{{ current_user.name }}"
+     style="display:none;"></div>
+
+<div class="row justify-content-center fade-in">
+    <div class="col-md-8 col-lg-7">
+        <div class="chat-container">
+
+            <!-- CHAT HEADER -->
+            <div class="chat-header">
+                <div class="avatar-circle">{{ other_user.name[0].upper() }}</div>
+                <div>
+                    <h5>{{ other_user.name }}</h5>
+                    <small style="color:rgba(255,255,255,0.5); font-size:0.8rem;">{{ other_user.role.title() }}</small>
+                </div>
+                <div class="online-dot ms-auto"></div>
+            </div>
+
+            <!-- MESSAGES -->
+            <div class="chat-messages" id="messages">
+                {% if not messages %}
+                    <div style="text-align:center; color:var(--gray-400); font-size:0.9rem; margin: auto;">
+                        <div style="font-size:2.5rem; margin-bottom:8px;">💬</div>
+                        Say hello to {{ other_user.name.split()[0] }}!
+                    </div>
+                {% endif %}
+                {% for msg in messages %}
+                    <div class="chat-bubble {{ 'sent' if msg.sender_id == current_user.id else 'received' }}">
+                        <small class="fw-bold">{{ msg.sender.name }}</small>
+                        {{ msg.content }}
+                        <small>{{ msg.timestamp.strftime('%H:%M') }}</small>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- INPUT -->
+            <div class="chat-footer">
+                <input type="text" id="messageInput" class="chat-input form-control"
+                       placeholder="Type a message..."
+                       onkeypress="if(event.key==='Enter') sendMessage()">
+                <button class="btn-send" onclick="sendMessage()">➤</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    var chatData = document.getElementById('chat-data');
+    var myId     = parseInt(chatData.getAttribute('data-my-id'));
+    var otherId  = parseInt(chatData.getAttribute('data-other-id'));
+    var myName   = chatData.getAttribute('data-my-name');
+    var room     = 'chat_' + Math.min(myId, otherId) + '_' + Math.max(myId, otherId);
+
+    var socket = io();
+    socket.emit('join', { room: room });
+
+    var msgDiv = document.getElementById('messages');
+    msgDiv.scrollTop = msgDiv.scrollHeight;
+
+    socket.on('receive_message', function(data) {
+        var isMe = (data.sender === myName);
+
+        // Remove empty state if present
+        var empty = msgDiv.querySelector('div[style*="text-align:center"]');
+        if (empty) empty.remove();
+
+        var bubble = document.createElement('div');
+        bubble.className = 'chat-bubble ' + (isMe ? 'sent' : 'received');
+
+        var senderEl = document.createElement('small');
+        senderEl.className = 'fw-bold';
+        senderEl.textContent = data.sender;
+
+        var msgText = document.createTextNode(data.message);
+
+        var timeEl = document.createElement('small');
+        timeEl.textContent = data.timestamp;
+
+        bubble.appendChild(senderEl);
+        bubble.appendChild(document.createElement('br'));
+        bubble.appendChild(msgText);
+        bubble.appendChild(document.createElement('br'));
+        bubble.appendChild(timeEl);
+
+        msgDiv.appendChild(bubble);
+        msgDiv.scrollTop = msgDiv.scrollHeight;
+    });
+
+    function sendMessage() {
+        var input = document.getElementById('messageInput');
+        var msg = input.value.trim();
+        if (msg === '') return;
+
+        socket.emit('send_message', {
+            room: room,
+            sender_id: myId,
+            receiver_id: otherId,
+            sender_name: myName,
+            message: msg
+        });
+        input.value = '';
+    }
+</script>
+{% endblock %}

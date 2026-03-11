@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- runners.html -->
+<div class="d-flex justify-content-between align-items-center mb-2 fade-in">
+    <div>
+        <h2 class="section-title mb-0">Find a Runner 🏃</h2>
+        <p class="section-subtitle mb-0">Trusted people ready to run your errands</p>
+    </div>
+    <span style="background:var(--primary-light); color:var(--primary); border-radius:50px; padding:6px 18px; font-weight:700; font-size:0.9rem;">
+        {{ runners|length }} Runners
+    </span>
+</div>
+
+{% if runners %}
+    <div class="row g-4 mt-1 fade-in-1">
+        {% for runner in runners %}
+        <div class="col-md-4">
+            <div class="runner-card">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="avatar-circle avatar-lg me-3">{{ runner.name[0].upper() }}</div>
+                    <div>
+                        <div class="runner-name" style="font-size:1.05rem;">{{ runner.name }}</div>
+                        <div class="runner-location">📍 {{ runner.location or 'Nigeria' }}</div>
+                    </div>
+                </div>
+                <p class="runner-bio">{{ runner.bio or 'Ready to run your errands fast and safely!' }}</p>
+                {% if runner.phone %}
+                <p style="font-size:0.85rem; color:var(--gray-400); margin-bottom:12px;">📞 {{ runner.phone }}</p>
+                {% endif %}
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="rating-badge">⭐ {{ runner.rating }}/5</span>
+                    {% if runner.is_available %}
+                        <span class="available-badge">✅ Available</span>
+                    {% else %}
+                        <span class="busy-badge">❌ Busy</span>
+                    {% endif %}
+                </div>
+                {% if current_user.is_authenticated %}
+                    {% if current_user.role == 'customer' %}
+                        <a href="{{ url_for('chat', other_user_id=runner.id) }}" class="btn btn-primary w-100">
+                            💬 Chat with {{ runner.name.split()[0] }}
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-primary w-100">🔐 Login to Chat</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state fade-in-1">
+        <div class="empty-icon">🏃</div>
+        <h4>No Runners Yet</h4>
+        <p>Be the first to sign up as a runner and start earning!</p>
+        <a href="{{ url_for('register') }}" class="btn btn-primary px-5">Become a Runner 🚀</a>
+    </div>
+{% endif %}
+{% endblock %}

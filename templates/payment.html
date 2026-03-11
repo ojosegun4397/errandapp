@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="payment-card fade-in">
+            <div class="payment-icon">💳</div>
+            <h2 style="font-size:1.6rem; margin-bottom:6px;">Pay for Errand</h2>
+            <p style="color:var(--gray-400); font-size:0.9rem; margin-bottom:28px;">Secure payment powered by Paystack</p>
+
+            <!-- ERRAND SUMMARY -->
+            <div style="background:var(--gray-100); border-radius:var(--radius); padding:20px; margin-bottom:28px; text-align:left;">
+                <h6 style="font-weight:700; color:var(--navy); margin-bottom:12px;">{{ errand.title }}</h6>
+                <div style="font-size:0.85rem; color:var(--gray-600);">
+                    <div class="mb-1">📍 <strong>From:</strong> {{ errand.pickup_location }}</div>
+                    <div class="mb-1">📦 <strong>To:</strong> {{ errand.delivery_location }}</div>
+                    {% if errand.runner %}
+                    <div class="mt-2">🏃 <strong>Runner:</strong> {{ errand.runner.name }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- AMOUNT -->
+            <div class="mb-4">
+                <p style="color:var(--gray-400); font-size:0.85rem; margin-bottom:4px;">Total Amount</p>
+                <div class="payment-amount">₦{{ "{:,.0f}".format(errand.budget) }}</div>
+            </div>
+
+            <form method="POST">
+                <button type="submit" class="btn-pay">
+                    🔒 Pay ₦{{ "{:,.0f}".format(errand.budget) }} Securely
+                </button>
+            </form>
+
+            <p style="color:var(--gray-400); font-size:0.78rem; margin-top:16px;">
+                🔐 You'll be redirected to Paystack's secure payment page
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

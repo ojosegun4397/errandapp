@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7 col-lg-6">
+        <div class="form-card fade-in">
+            <h2>📝 Post an Errand</h2>
+            <p class="subtitle">Fill in the details and a runner will accept it fast!</p>
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label">Errand Title</label>
+                    <input type="text" name="title" class="form-control"
+                           placeholder="e.g. Pick up groceries from Shoprite" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea name="description" class="form-control" rows="3"
+                              placeholder="Describe exactly what you need done, any specific items, instructions..." required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">📍 Pickup Location</label>
+                    <input type="text" name="pickup_location" class="form-control"
+                           placeholder="Where should the runner go to pick up?" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">📦 Delivery Location</label>
+                    <input type="text" name="delivery_location" class="form-control"
+                           placeholder="Where should it be delivered to?" required>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">💰 Your Budget (₦)</label>
+                    <input type="number" name="budget" class="form-control"
+                           placeholder="e.g. 2000" min="100" required>
+                    <small style="color:var(--gray-400); font-size:0.82rem;">Enter amount in Nigerian Naira (₦)</small>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-3" style="font-size:1rem;">
+                    🚀 Post Errand Now
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
