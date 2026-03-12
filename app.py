@@ -64,8 +64,8 @@ class Errand(db.Model):
     delivery_location = db.Column(db.String(300), nullable=False)
     budget = db.Column(db.Float, nullable=False)
     status = db.Column(db.String(50), default='open')  # open, assigned, completed
-    customer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    runner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    runner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     customer = db.relationship('User', foreign_keys=[customer_id], backref='posted_errands')
     runner = db.relationship('User', foreign_keys=[runner_id], backref='assigned_errands')
@@ -74,9 +74,9 @@ class Errand(db.Model):
 class Message(db.Model):
     tablename = 'messages'
     id = db.Column(db.Integer, primary_key=True)
-    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    errand_id = db.Column(db.Integer, db.ForeignKey('errand.id'), nullable=True)
+    sender_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    receiver_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    errand_id = db.Column(db.Integer, db.ForeignKey('errands.id'), nullable=True)
     content = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     sender = db.relationship('User', foreign_keys=[sender_id])
@@ -86,9 +86,9 @@ class Message(db.Model):
 class Payment(db.Model):
     tablename = 'payments'
     id = db.Column(db.Integer, primary_key=True)
-    errand_id = db.Column(db.Integer, db.ForeignKey('errand.id'), nullable=False)
-    payer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    payee_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    errand_id = db.Column(db.Integer, db.ForeignKey('errands.id'), nullable=False)
+    payer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    payee_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     amount = db.Column(db.Float, nullable=False)
     reference = db.Column(db.String(200), unique=True)
 
@@ -357,4 +357,6 @@ if __name__ == '__main__':
 
 with app.app_context():
     db.create_all()
+
+
 
